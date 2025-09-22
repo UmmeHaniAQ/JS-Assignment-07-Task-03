@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Guessing Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .game-container {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 350px;
+    }
+    h1 {
+      margin-bottom: 10px;
+      color: #333;
+    }
+    select, input, button {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      width: 80%;
+    }
+    button {
+      cursor: pointer;
+      background: #6c63ff;
+      color: white;
+      border: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #574b90;
+    }
+    #message {
+      margin-top: 15px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>Guess the Number 🎯</h1>
+
+    <label for="level">Choose Level:</label>
+    <select id="level">
+      <option value="easy">Easy (1-10)</option>
+      <option value="medium">Medium (1-50)</option>
+      <option value="hard">Hard (1-100)</option>
+    </select>
+    <br>
+    <button onclick="startGame()">Start Game</button>
+
+    <div id="gameArea" style="display:none;">
+      <p id="range"></p>
+      <input type="number" id="guessInput" placeholder="Enter your guess">
+      <button onclick="checkGuess()">Submit Guess</button>
+      <p id="message"></p>
+      <p id="attempts"></p>
+    </div>
+  </div>
+
+  <script>
+    let randomNumber, attemptsLeft, maxNumber;
+
+    function startGame() {
+      let level = document.getElementById("level").value;
+
+      if (level === "easy") {
+        maxNumber = 10;
+        attemptsLeft = 5;
+      } else if (level === "medium") {
+        maxNumber = 50;
+        attemptsLeft = 7;
+      } else {
+        maxNumber = 100;
+        attemptsLeft = 10;
+      }
+
+      randomNumber = Math.floor(Math.random() * maxNumber) + 1;
+      document.getElementById("range").innerText = `Guess a number between 1 and ${maxNumber}`;
+      document.getElementById("attempts").innerText = `Attempts left: ${attemptsLeft}`;
+      document.getElementById("gameArea").style.display = "block";
+      document.getElementById("message").innerText = "";
+    }
+
+    function checkGuess() {
+      let userGuess = parseInt(document.getElementById("guessInput").value);
+      if (isNaN(userGuess)) {
+        document.getElementById("message").innerText = "⚠️ Please enter a valid number.";
+        return;
+      }
+
+      if (userGuess === randomNumber) {
+        document.getElementById("message").innerText = `🎉 Correct! The number was ${randomNumber}`;
+        document.getElementById("gameArea").style.display = "none";
+      } else {
+        attemptsLeft--;
+        if (attemptsLeft === 0) {
+          document.getElementById("message").innerText = `❌ Game Over! The number was ${randomNumber}`;
+          document.getElementById("gameArea").style.display = "none";
+        } else {
+          let hint = userGuess > randomNumber ? "Too High 📈" : "Too Low 📉";
+          document.getElementById("message").innerText = `${hint}. Try again!`;
+          document.getElementById("attempts").innerText = `Attempts left: ${attemptsLeft}`;
+        }
+      }
+      document.getElementById("guessInput").value = "";
+    }
+  </script>
+</body>
+</html>
